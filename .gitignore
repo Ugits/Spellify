@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Sensetiv Information ###
+src/main/resources/mykeystore.p12
+src/main/resources/application.properties
