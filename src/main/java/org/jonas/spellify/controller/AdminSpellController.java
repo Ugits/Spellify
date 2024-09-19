@@ -1,5 +1,6 @@
 package org.jonas.spellify.controller;
 
+import org.jonas.spellify.model.dto.SpellDTO;
 import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.service.AdminSpellService;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,21 @@ public class AdminSpellController {
     public ResponseEntity<Spell> addSpell(@RequestBody Spell spell) {
         Spell savedSpell = adminSpellService.saveSpell(spell);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedSpell);
+    }
+
+    @PutMapping("/sync-api")
+    public ResponseEntity<List<Spell>> syncSpellsFromApi() {
+        List<Spell> updatedSpells = adminSpellService.syncSpellsFromApi();
+        return ResponseEntity.ok(updatedSpells);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Spell> updateSpellById(
+            @PathVariable("id") Long id,
+            @RequestBody SpellDTO spellDTO
+    ) {
+        Spell updatedSpell = adminSpellService.updateSpell(id, spellDTO);
+        return ResponseEntity.ok(updatedSpell);
     }
 
     @DeleteMapping("/truncate")
