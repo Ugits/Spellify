@@ -30,4 +30,15 @@ public class AdminSpellController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedSpell);
     }
 
+    @DeleteMapping("/truncate")
+    public ResponseEntity<Void> truncateSpells() {
+        adminSpellService.truncateSpellsTable();
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSpellById(@PathVariable("id") Long id) {
+        adminSpellService.deleteSpellById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
