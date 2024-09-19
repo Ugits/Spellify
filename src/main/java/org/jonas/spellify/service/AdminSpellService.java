@@ -1,5 +1,6 @@
 package org.jonas.spellify.service;
 
+import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.repository.SpellRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,12 @@ public class AdminSpellService {
         this.spellRepository = spellRepository;
     }
 
+    public List<Spell> saveAllSpells(List<Spell> spells) {
+        return spellRepository.saveAll(spells);
+    }
 
+    public Spell saveSpell(Spell spell) {
+        return spellRepository.save(spell);
+    }
 
 }
