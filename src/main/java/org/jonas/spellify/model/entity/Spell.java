@@ -2,26 +2,41 @@ package org.jonas.spellify.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.Collate;
 
 import java.util.List;
 
 @Entity
-@Table(schema = "spells")
+@Table(name = "spells")
 public class Spell {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
     private String index;
+
+    @NotNull
     private String name;
+
     @JsonProperty("casting_time")
     private String castingTime;
+
+    @Column(length = 1000)
     @JsonProperty("desc")
+    @ElementCollection
     private List<String> description;
+
     private Integer level;
+
     private String range;
+
     private Boolean ritual;
+
     private String duration;
+
     private Boolean concentration;
 
     public Spell() {
