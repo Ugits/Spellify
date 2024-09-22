@@ -3,11 +3,14 @@ package org.jonas.spellify.controller;
 import org.jonas.spellify.model.dto.SpellDTO;
 import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.service.AdminSpellService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("admin/spells")
@@ -15,18 +18,26 @@ public class AdminSpellController {
 
     private final AdminSpellService adminSpellService;
 
+    @Autowired
     public AdminSpellController(AdminSpellService adminSpellService) {
         this.adminSpellService = adminSpellService;
     }
 
     @PostMapping("/add-batch")
-    public ResponseEntity<List<Spell>> addSpellsBatch(@RequestBody List<Spell> spells) {
+    public ResponseEntity<List<Spell>> addSpellsBatch(@RequestBody List<SpellDTO> spellsDTO) {
+        
+        List<Spell> spells = spellsDTO.stream()
+                .map((adminSpellService::convertSpellDtoToEntity))
+                .collect(Collectors.toList());
+
         List<Spell> savedSpells = adminSpellService.saveAllSpells(spells);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedSpells);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Spell> addSpell(@RequestBody Spell spell) {
+    public ResponseEntity<Spell> addSpell(@RequestBody SpellDTO spellDTO) {
+
+        Spell spell = adminSpellService.convertSpellDtoToEntity(spellDTO);
         Spell savedSpell = adminSpellService.saveSpell(spell);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedSpell);
     }
@@ -57,4 +68,5 @@ public class AdminSpellController {
         adminSpellService.deleteSpellById(id);
         return ResponseEntity.noContent().build();
     }
+
 }

@@ -1,5 +1,6 @@
 package org.jonas.spellify.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -17,7 +18,9 @@ public record SpellDTO(
 
         List<SpellDescriptionDTO> description,
 
+        @JsonProperty("casting_time")
         String castingTime,
+
         String range,
         String duration,
         Boolean ritual,

@@ -10,6 +10,18 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(SpellAlreadyExists.class)
+    public ResponseEntity<ErrorResponse> handleSpellAlreadyExists(SpellAlreadyExists e) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                e.getMessage(),
+                LocalDateTime.now().toString()
+        );
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+    }
+
     @ExceptionHandler(SpellApiException.class)
     public ResponseEntity<ErrorResponse> handleSpellApiException(SpellApiException e) {
         ErrorResponse errorResponse = new ErrorResponse(

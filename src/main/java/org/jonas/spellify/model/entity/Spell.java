@@ -126,4 +126,24 @@ public class Spell {
     }
 
 
+    public void addDescription(SpellDescription description) {
+        description.setSpell(this); // Set the owning side of the relationship
+        this.description.add(description); // Add the description to the collection
+    }
+
+    @Override
+    public String toString() {
+        return "Spell{" +
+                "id=" + id +
+                ", index='" + index + '\'' +
+                ", name='" + name + '\'' +
+                ", castingTime='" + castingTime + '\'' +
+                ", description=" + description +
+                ", level=" + level +
+                ", range='" + range + '\'' +
+                ", ritual=" + ritual +
+                ", duration='" + duration + '\'' +
+                ", concentration=" + concentration +
+                '}';
+    }
 }
