@@ -15,8 +15,7 @@ public record SpellDTO(
         @Max(value = 9, message = "Level must be at most 9")
         Integer level,
 
-        @Size(max = 1000, message = "Description cannot exceed 1000 characters")
-        List<SpellDescription> description,
+        List<SpellDescriptionDTO> description,
 
         String castingTime,
         String range,

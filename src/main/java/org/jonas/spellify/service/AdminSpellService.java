@@ -6,6 +6,7 @@ import org.jonas.spellify.api.service.ApiSpellService;
 import org.jonas.spellify.exception.SpellNotFoundException;
 import org.jonas.spellify.exception.SpellUpdateException;
 import org.jonas.spellify.model.dto.SpellDTO;
+import org.jonas.spellify.model.dto.SpellDescriptionDTO;
 import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.model.entity.SpellDescription;
 import org.jonas.spellify.repository.SpellRepository;
@@ -58,7 +59,6 @@ public class AdminSpellService {
         Spell spell = new Spell();
         BeanUtils.copyProperties(spellApiDTO, spell);
 
-        // Clear previous descriptions and add new ones
         spell.setDescription(spellApiDTO.getDescription().stream()
                 .map(descDTO -> new SpellDescription(descDTO.getDescription(), spell))
                 .collect(Collectors.toList()));
@@ -69,18 +69,33 @@ public class AdminSpellService {
     public Spell updateSpell(Long id, SpellDTO spellDTO) {
         Spell spell = spellRepository.findById(id)
                 .orElseThrow(() -> new SpellNotFoundException("Spell not found with id: " + id));
-
+        
         if (spellDTO.index() != null) spell.setIndex(spellDTO.index());
         if (spellDTO.name() != null) spell.setName(spellDTO.name());
         if (spellDTO.level() != null) spell.setLevel(spellDTO.level());
-        if (spellDTO.description() != null) spell.setDescription(spellDTO.description());
         if (spellDTO.castingTime() != null) spell.setCastingTime(spellDTO.castingTime());
         if (spellDTO.range() != null) spell.setRange(spellDTO.range());
         if (spellDTO.duration() != null) spell.setDuration(spellDTO.duration());
         if (spellDTO.ritual() != null) spell.setRitual(spellDTO.ritual());
         if (spellDTO.concentration() != null) spell.setConcentration(spellDTO.concentration());
 
+        if (spellDTO.description() != null) {
+
+            spell.getDescription().clear();
+
+            for (SpellDescriptionDTO descDTO : spellDTO.description()) {
+                SpellDescription newDesc = new SpellDescription(descDTO.description(), spell);
+                spell.getDescription().add(newDesc);
+            }
+        }
+
         return spellRepository.save(spell);
+    }
+
+    private List<SpellDescription> convertToSpellDescriptionList(List<SpellDescriptionDTO> dtos, Spell spell) {
+        return dtos.stream()
+                .map(dto -> new SpellDescription(dto.description(), spell))
+                .collect(Collectors.toList());
     }
 
     @Transactional
