@@ -3,6 +3,7 @@ package org.jonas.spellify.model.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import org.jonas.spellify.model.entity.SpellDescription;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public record SpellDTO(
         Integer level,
 
         @Size(max = 1000, message = "Description cannot exceed 1000 characters")
-        List<String> description,
+        List<SpellDescription> description,
 
         String castingTime,
         String range,

@@ -2,7 +2,9 @@ package org.jonas.spellify.api.controller;
 
 import org.jonas.spellify.api.model.SpellApi;
 import org.jonas.spellify.api.model.SpellCatalog;
+import org.jonas.spellify.api.model.dto.SpellApiDTO;
 import org.jonas.spellify.api.service.ApiSpellService;
+import org.jonas.spellify.model.entity.Spell;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +35,14 @@ public class ApiSpellController {
     }
 
     @GetMapping("/{index}")
-    public Mono<ResponseEntity<SpellApi>> getSpell(@PathVariable("index") String index) {
+    public Mono<ResponseEntity<SpellApiDTO>> getSpell(@PathVariable("index") String index) {
         return apiSpellService.fetchSpellByIndex(index)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/fetch-all")
-    public Mono<ResponseEntity<List<SpellApi>>> fetchAllSpells() {
+    public Mono<ResponseEntity<List<SpellApiDTO>>> fetchAllSpells() {
         return apiSpellService.fetchAllSpells()
                 .map(spells -> {
                     if (spells.isEmpty()) {

@@ -3,8 +3,8 @@ package org.jonas.spellify.model.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.Collate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,19 +15,15 @@ public class Spell {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     private String index;
 
-    @NotNull
     private String name;
 
     @JsonProperty("casting_time")
     private String castingTime;
 
-    @Column(length = 1000)
-    @JsonProperty("desc")
-    @ElementCollection
-    private List<String> description;
+    @OneToMany(mappedBy = "spell", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SpellDescription> description = new ArrayList<>();
 
     private Integer level;
 
@@ -42,7 +38,7 @@ public class Spell {
     public Spell() {
     }
 
-    public Spell(String name, List<String> description, int level, String range, boolean ritual, String duration, boolean concentration, String castingTime) {
+    public Spell(String name, List<SpellDescription> description, int level, String range, boolean ritual, String duration, boolean concentration, String castingTime) {
         this.name = name;
         this.description = description;
         this.level = level;
@@ -73,11 +69,11 @@ public class Spell {
         this.name = name;
     }
 
-    public List<String> getDescription() {
+    public List<SpellDescription> getDescription() {
         return description;
     }
 
-    public void setDescription(List<String> description) {
+    public void setDescription(List<SpellDescription> description) {
         this.description = description;
     }
 

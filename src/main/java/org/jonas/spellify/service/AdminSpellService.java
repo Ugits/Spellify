@@ -1,17 +1,20 @@
 package org.jonas.spellify.service;
 
 import org.jonas.spellify.api.model.SpellApi;
+import org.jonas.spellify.api.model.dto.SpellApiDTO;
 import org.jonas.spellify.api.service.ApiSpellService;
 import org.jonas.spellify.exception.SpellNotFoundException;
 import org.jonas.spellify.exception.SpellUpdateException;
 import org.jonas.spellify.model.dto.SpellDTO;
 import org.jonas.spellify.model.entity.Spell;
+import org.jonas.spellify.model.entity.SpellDescription;
 import org.jonas.spellify.repository.SpellRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminSpellService {
@@ -34,7 +37,8 @@ public class AdminSpellService {
 
     @Transactional
     public List<Spell> syncSpellsFromApi() {
-        List<SpellApi> spellsFromApi = apiSpellService.fetchAllSpells().block();
+        List<SpellApiDTO> spellsFromApi = apiSpellService.fetchAllSpells().block();
+
         if (spellsFromApi == null || spellsFromApi.isEmpty()) {
             throw new SpellUpdateException("No spells returned from external API.");
         }
@@ -50,9 +54,15 @@ public class AdminSpellService {
                 .toList();
     }
 
-    private Spell convertApiToEntity(SpellApi spellApi) {
+    private Spell convertApiToEntity(SpellApiDTO spellApiDTO) {
         Spell spell = new Spell();
-        BeanUtils.copyProperties(spellApi, spell);
+        BeanUtils.copyProperties(spellApiDTO, spell);
+
+        // Clear previous descriptions and add new ones
+        spell.setDescription(spellApiDTO.getDescription().stream()
+                .map(descDTO -> new SpellDescription(descDTO.getDescription(), spell))
+                .collect(Collectors.toList()));
+
         return spell;
     }
 
