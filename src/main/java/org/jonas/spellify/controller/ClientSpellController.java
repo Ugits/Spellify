@@ -6,13 +6,11 @@ import org.jonas.spellify.service.ClientSpellService;
 import org.jonas.spellify.model.dto.validation.ValidationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/spells")
-@Validated
 public class ClientSpellController {
 
     private final ClientSpellService clientSpellService;

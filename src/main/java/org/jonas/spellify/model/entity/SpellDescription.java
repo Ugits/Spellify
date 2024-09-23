@@ -9,16 +9,15 @@ public class SpellDescription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Unique identifier for each description
+    private Long id;
 
-    @Column(length = 1000) // Adjust the length as needed
-    private String description; // The description text
+    @Column(length = 1000)
+    private String description;
 
-    @ManyToOne // Many descriptions can belong to one spell
-    @JoinColumn(name = "spell_id", nullable = false) // Foreign key to the spells table
-    @JsonBackReference // Prevents circular references during serialization
+    @ManyToOne
+    @JoinColumn(name = "spell_id", nullable = false)
+    @JsonBackReference
     private Spell spell;
-
 
     public SpellDescription() {}
 
@@ -26,7 +25,6 @@ public class SpellDescription {
         this.description = description;
         this.spell = spell;
     }
-
 
     public Long getId() {
         return id;

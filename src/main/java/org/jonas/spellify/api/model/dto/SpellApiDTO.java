@@ -1,7 +1,6 @@
 package org.jonas.spellify.api.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,18 +17,6 @@ public class SpellApiDTO {
     private Boolean concentration;
 
     public SpellApiDTO() {
-    }
-
-    public SpellApiDTO(String index, String name, Integer level, List<SpellDescriptionApiDTO> description, String castingTime, String range, String duration, Boolean ritual, Boolean concentration) {
-        this.index = index;
-        this.name = name;
-        this.level = level;
-        this.description = description;
-        this.castingTime = castingTime;
-        this.range = range;
-        this.duration = duration;
-        this.ritual = ritual;
-        this.concentration = concentration;
     }
 
     public void addDescription(SpellDescriptionApiDTO description) {

@@ -53,7 +53,6 @@ public class ValidationHandler {
 
             throw new SpellValidationException("Invalid ID: " + "[" + spellIdDTO.id() + "] : " + errorMessage);
         }
-
     }
 
 }

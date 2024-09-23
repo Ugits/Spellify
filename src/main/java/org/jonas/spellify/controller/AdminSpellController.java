@@ -75,5 +75,4 @@ public class AdminSpellController {
         adminSpellService.deleteSpellById(id);
         return ResponseEntity.noContent().build();
     }
-
 }

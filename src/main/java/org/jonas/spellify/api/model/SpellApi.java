@@ -1,22 +1,21 @@
 package org.jonas.spellify.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class SpellApi {
-//todo Testa att bygga en record istället
+
         public String index;
-        public String name;               // Name of the spell
+        public String name;
         @JsonProperty("casting_time")
-        public String castingTime;        // Casting time of the spell
+        public String castingTime;
         @JsonProperty("desc")
-        public List<String> description;  // Description of the spell
-        public int level;                 // Level of the spell
-        public String range;              // Range of the spell
-        public boolean ritual;            // Whether the spell is a ritual
-        public String duration;           // Duration of the spell
-        public boolean concentration;     // Whether the spell requires concentration
+        public List<String> description;
+        public int level;
+        public String range;
+        public boolean ritual;
+        public String duration;
+        public boolean concentration;
 
 
         public String getIndex() {

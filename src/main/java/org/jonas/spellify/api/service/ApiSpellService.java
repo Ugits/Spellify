@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -50,24 +49,12 @@ public class ApiSpellService {
                     List<String> spellIndexes = spellList.getResults().stream()
                             .map(SpellShort::getIndex)
                             .collect(Collectors.toList());
-                    // kan jag returnera nonflux
+
                     return Flux.fromIterable(spellIndexes)
                             .flatMap(this::fetchSpellByIndex)
                             .collectList();
                 })
                 .onErrorResume(error -> Mono.error(new SpellApiException("Error fetching all spells: " + error.getMessage())));
-        //        Mono<SpellCatalog> spellList = fetchSpellsFromApi();
-//
-//        List<SpellApi> test = spellList.map(object -> {
-//            List<String> indexList = object.getResults().stream()
-//                    .map(SpellShort::getIndex)
-//                    .toList();
-//
-//            Mono<List<SpellApi>> spells = indexList.stream()
-//                    .flatMap(index -> fetchSpellByName(index))
-//                    .co;
-//            return spells;
-//        })
     }
 
     private SpellApiDTO mapToSpellApiDTO(SpellApi spellApi) {
@@ -86,7 +73,6 @@ public class ApiSpellService {
             SpellDescriptionApiDTO spellDescriptionDTO = new SpellDescriptionApiDTO(desc);
             spellApiDTO.addDescription(spellDescriptionDTO);
         }
-
         return spellApiDTO;
     }
 

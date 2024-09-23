@@ -18,7 +18,8 @@ public class ClientSpellService {
 
     public List<Spell> getAllSpells() {
         List<Spell> spells = spellRepository.findAll();
-        if (spells.isEmpty()) throw new SpellNotFoundException("No spells found");
+        if (spells.isEmpty()) throw new SpellNotFoundException(
+                "No spells found");
         return spells;
     }
 
@@ -45,7 +46,8 @@ public class ClientSpellService {
     public List<Spell> getSpellsByRitualAndMaxLevel(Boolean ritual, Integer maxLevel) {
         List<Spell> spells = spellRepository.findSpellsByRitualAndLevelIsLessThanEqual(ritual, maxLevel);
         if (spells.isEmpty()) {
-            throw new SpellNotFoundException("No spells found with ritual: " + "[" + ritual + "]" + " and max level: " + "[" + maxLevel + "]");
+            throw new SpellNotFoundException(
+                    "No spells found with ritual: " + "[" + ritual + "]" + " and max level: " + "[" + maxLevel + "]");
         }
         return spells;
     }
@@ -53,7 +55,8 @@ public class ClientSpellService {
     public List<Spell> getSpellsByCastingTimeAndMaxLevel(String castingTime, Integer maxLevel) {
         List<Spell> spells = spellRepository.findSpellsByCastingTimeAndLevelIsLessThanEqual(castingTime, maxLevel);
         if (spells.isEmpty()) {
-            throw new SpellNotFoundException("No spells found with casting time: " + "[" + castingTime + "]" + " and max level: " + "[" + maxLevel + "]");
+            throw new SpellNotFoundException(
+                    "No spells found with casting time: " + "[" + castingTime + "]" + " and max level: " + "[" + maxLevel + "]");
         }
         return spells;
     }
@@ -61,7 +64,8 @@ public class ClientSpellService {
     public List<Spell> getSpellsByConcentrationAndMaxLevel(Boolean concentration, Integer maxLevel) {
         List<Spell> spells = spellRepository.findSpellsByConcentrationAndLevelIsLessThanEqual(concentration, maxLevel);
         if (spells.isEmpty()) {
-            throw new SpellNotFoundException("No spells found with concentration: " + "[" + concentration + "]" + " and max level: " + "[" + maxLevel + "]");
+            throw new SpellNotFoundException(
+                    "No spells found with concentration: " + "[" + concentration + "]" + " and max level: " + "[" + maxLevel + "]");
         }
         return spells;
     }
@@ -69,7 +73,8 @@ public class ClientSpellService {
     public List<Spell> getSpellsByDurationAndMaxLevel(String duration, Integer maxLevel) {
         List<Spell> spells = spellRepository.findSpellsByDurationAndLevelIsLessThanEqual(duration, maxLevel);
         if (spells.isEmpty()) {
-            throw new SpellNotFoundException("No spells found with duration: " + "[" + duration + "]" + " and max level: " + "[" + maxLevel + "]");
+            throw new SpellNotFoundException(
+                    "No spells found with duration: " + "[" + duration + "]" + " and max level: " + "[" + maxLevel + "]");
         }
         return spells;
     }
@@ -77,7 +82,8 @@ public class ClientSpellService {
     public List<Spell> getSpellsByRangeAndMaxLevel(String range, Integer maxLevel) {
         List<Spell> spells = spellRepository.findSpellsByRangeAndLevelIsLessThanEqual(range, maxLevel);
         if (spells.isEmpty()) {
-            throw new SpellNotFoundException("No spells found with range: " + "[" + range + "]" + " and max level: " + "[" + maxLevel + "]");
+            throw new SpellNotFoundException(
+                    "No spells found with range: " + "[" + range + "]" + " and max level: " + "[" + maxLevel + "]");
         }
         return spells;
     }

@@ -2,8 +2,6 @@ package org.jonas.spellify.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,19 +33,7 @@ public class Spell {
 
     private Boolean concentration;
 
-    public Spell() {
-    }
-
-    public Spell(String name, List<SpellDescription> description, int level, String range, boolean ritual, String duration, boolean concentration, String castingTime) {
-        this.name = name;
-        this.description = description;
-        this.level = level;
-        this.range = range;
-        this.ritual = ritual;
-        this.duration = duration;
-        this.concentration = concentration;
-        this.castingTime = castingTime;
-    }
+    public Spell() {}
 
     public Long getId() {
         return id;
