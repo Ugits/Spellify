@@ -1,6 +1,5 @@
 package org.jonas.spellify.service;
 
-import org.jonas.spellify.api.model.SpellApi;
 import org.jonas.spellify.api.model.dto.SpellApiDTO;
 import org.jonas.spellify.api.service.ApiSpellService;
 import org.jonas.spellify.exception.SpellAlreadyExists;
@@ -14,8 +13,6 @@ import org.jonas.spellify.repository.SpellDescriptionRepository;
 import org.jonas.spellify.repository.SpellRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,12 +31,11 @@ public class AdminSpellService {
     }
 
     public List<Spell> saveAllSpells(List<Spell> spells) {
-        List<Spell> existingSpells = new ArrayList<>();
-        for (Spell spell : spells) {
-            if (spellRepository.findByIndex(spell.getIndex()).isPresent()) {
-                existingSpells.add(spell);
-            }
-        }
+        List<Spell> existingSpells = spells.stream()
+                .filter(spell ->
+                        spellRepository.findByIndex(spell.getIndex()).isPresent())
+                .toList();
+
         if (!existingSpells.isEmpty()) {
             throw new SpellAlreadyExists(
                     "Spells with the following indexes alredy exists: "

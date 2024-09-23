@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleSpellNotFoundException(SpellNotFoundException e) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
-                e.getMessage(),
+                e.getMessage() + " --> Refer to documentation for input guidelines! <--",
                 LocalDateTime.now().toString()
         );
         return ResponseEntity
@@ -79,6 +79,18 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(SpellValidationException.class)
+    public ResponseEntity<ErrorResponse> handleSpellValidationException(SpellValidationException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                e.getMessage() + " --> Refer to documentation for input guidelines! <--",
+                LocalDateTime.now().toString()
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);
     }
 }
