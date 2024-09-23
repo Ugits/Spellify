@@ -7,12 +7,14 @@ import org.jonas.spellify.exception.SpellNotFoundException;
 import org.jonas.spellify.exception.SpellUpdateException;
 import org.jonas.spellify.model.dto.SpellDTO;
 import org.jonas.spellify.model.dto.SpellDescriptionDTO;
+import org.jonas.spellify.model.dto.UpdateSpellDTO;
 import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.model.entity.SpellDescription;
 import org.jonas.spellify.repository.SpellDescriptionRepository;
 import org.jonas.spellify.repository.SpellRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,16 +34,15 @@ public class AdminSpellService {
 
     public List<Spell> saveAllSpells(List<Spell> spells) {
         List<Spell> existingSpells = spells.stream()
-                .filter(spell ->
-                        spellRepository.findByIndex(spell.getIndex()).isPresent())
+                .filter(spell -> spellRepository.findByIndex(spell.getIndex()).isPresent())
                 .toList();
 
         if (!existingSpells.isEmpty()) {
             throw new SpellAlreadyExists(
-                    "Spells with the following indexes alredy exists: "
-                            + existingSpells.stream().map(Spell::getIndex).collect(Collectors.joining(", ")));
+                    "Spells with the following indexes already exists: "
+                            + existingSpells.stream()
+                            .map(Spell::getIndex).collect(Collectors.joining(", ")));
         }
-
         return spellRepository.saveAll(spells);
     }
 
@@ -49,9 +50,8 @@ public class AdminSpellService {
 
         Optional<Spell> spellOptional = spellRepository.findByIndex(spell.getIndex());
         if (spellOptional.isPresent()) {
-            throw new SpellAlreadyExists("The spell with index " + spell.getIndex() + " already exists");
+            throw new SpellAlreadyExists("The spell with index " + "[" + spell.getIndex() + "]" + " already exists");
         }
-
         return spellRepository.save(spell);
     }
 
@@ -99,12 +99,12 @@ public class AdminSpellService {
                 desc.setSpell(spell);
                 spell.addDescription(desc);
             });
-
             spellDescriptionRepository.saveAll(newDescriptions);
         }
     }
 
     private Spell convertSpellApiDtoToEntity(SpellApiDTO spellApiDTO) {
+
         Spell spell = new Spell();
         spell.setName(spellApiDTO.getName());
         spell.setIndex(spellApiDTO.getIndex());
@@ -121,40 +121,39 @@ public class AdminSpellService {
                 spell.addDescription(newDesc);
             });
         }
-
         return spell;
     }
 
-    public Spell updateSpell(Long id, SpellDTO spellDTO) {
-        Spell spell = spellRepository.findById(id)
-                .orElseThrow(() -> new SpellNotFoundException("Spell not found with id: " + id));
+    public Spell updateSpell(String index, UpdateSpellDTO updateSpellDTO) {
+        Optional<Spell> spell = spellRepository.findByIndex(index);
+        if (spell.isEmpty()) {
+            throw new SpellNotFoundException("No spell with index " + "[" + index + "]");
+        }
+        Spell updatedSpell = getUpdatedSpell(updateSpellDTO, spell.get());
 
-        if (spellDTO.index() != null) spell.setIndex(spellDTO.index());
-        if (spellDTO.name() != null) spell.setName(spellDTO.name());
-        if (spellDTO.level() != null) spell.setLevel(spellDTO.level());
-        if (spellDTO.castingTime() != null) spell.setCastingTime(spellDTO.castingTime());
-        if (spellDTO.range() != null) spell.setRange(spellDTO.range());
-        if (spellDTO.duration() != null) spell.setDuration(spellDTO.duration());
-        if (spellDTO.ritual() != null) spell.setRitual(spellDTO.ritual());
-        if (spellDTO.concentration() != null) spell.setConcentration(spellDTO.concentration());
+        return spellRepository.save(updatedSpell);
+    }
 
-        if (spellDTO.description() != null) {
+    private static Spell getUpdatedSpell(UpdateSpellDTO updateSpellDTO, Spell spell) {
+
+        if (updateSpellDTO.name() != null) spell.setName(updateSpellDTO.name());
+        if (updateSpellDTO.level() != null) spell.setLevel(updateSpellDTO.level());
+        if (updateSpellDTO.castingTime() != null) spell.setCastingTime(updateSpellDTO.castingTime());
+        if (updateSpellDTO.range() != null) spell.setRange(updateSpellDTO.range());
+        if (updateSpellDTO.duration() != null) spell.setDuration(updateSpellDTO.duration());
+        if (updateSpellDTO.ritual() != null) spell.setRitual(updateSpellDTO.ritual());
+        if (updateSpellDTO.concentration() != null) spell.setConcentration(updateSpellDTO.concentration());
+
+        if (updateSpellDTO.description() != null) {
 
             spell.getDescription().clear();
 
-            for (SpellDescriptionDTO descDTO : spellDTO.description()) {
+            for (SpellDescriptionDTO descDTO : updateSpellDTO.description()) {
                 SpellDescription newDesc = new SpellDescription(descDTO.description(), spell);
                 spell.getDescription().add(newDesc);
             }
         }
-
-        return spellRepository.save(spell);
-    }
-
-    private List<SpellDescription> convertToSpellDescriptionList(List<SpellDescriptionDTO> dtos, Spell spell) {
-        return dtos.stream()
-                .map(dto -> new SpellDescription(dto.description(), spell))
-                .collect(Collectors.toList());
+        return spell;
     }
 
     @Transactional
@@ -163,8 +162,10 @@ public class AdminSpellService {
     }
 
     public void deleteSpellById(Long id) {
-        Spell spell = spellRepository.findById(id)
-                .orElseThrow(() -> new SpellNotFoundException("Spell not found with id: " + id));
+        Optional<Spell> spell = spellRepository.findById(id);
+        if (spell.isEmpty()) {
+            throw new SpellNotFoundException("Spell not found with id: " + "[" + id + "]");
+        }
         spellRepository.deleteById(id);
     }
 
@@ -185,7 +186,6 @@ public class AdminSpellService {
                 spell.addDescription(description);
             });
         }
-
         return spell;
     }
 }

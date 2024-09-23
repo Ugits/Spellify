@@ -54,6 +54,11 @@ public record SpellDTO(
         Boolean concentration
 ) {
         // factory method for name
+        public static SpellDTO createWithIndex(String index) {
+                return new SpellDTO(index, "temp", 0, List.of(), "temp", "temp", "temp", false, false);
+        }
+
+        // factory method for name
         public static SpellDTO createWithName(String name) {
                 return new SpellDTO("temp", name, 0, List.of(), "temp", "temp", "temp", false, false);
         }

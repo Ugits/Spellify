@@ -1,8 +1,11 @@
 package org.jonas.spellify.controller;
 
 import org.jonas.spellify.model.dto.SpellDTO;
+import org.jonas.spellify.model.dto.SpellIdDTO;
+import org.jonas.spellify.model.dto.UpdateSpellDTO;
 import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.service.AdminSpellService;
+import org.jonas.spellify.model.dto.validation.ValidationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,49 +18,47 @@ import java.util.stream.Collectors;
 public class AdminSpellController {
 
     private final AdminSpellService adminSpellService;
+    private final ValidationHandler validationHandler;
 
     @Autowired
-    public AdminSpellController(AdminSpellService adminSpellService) {
+    public AdminSpellController(AdminSpellService adminSpellService, ValidationHandler validationHandler) {
         this.adminSpellService = adminSpellService;
+        this.validationHandler = validationHandler;
     }
 
     @PostMapping("/add-batch")
     public ResponseEntity<List<Spell>> addSpellsBatch(@RequestBody List<SpellDTO> spellsDTO) {
 
-        // TODO VALIDATE
-
+        spellsDTO.forEach(validationHandler::validateSpellDTO);
         List<Spell> spells = spellsDTO.stream()
                 .map((adminSpellService::convertSpellDtoToEntity))
                 .collect(Collectors.toList());
-
-        List<Spell> savedSpells = adminSpellService.saveAllSpells(spells);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedSpells);
+        return ResponseEntity.status(HttpStatus.CREATED).body(adminSpellService.saveAllSpells(spells));
     }
 
     @PostMapping("/add")
     public ResponseEntity<Spell> addSpell(@RequestBody SpellDTO spellDTO) {
 
-        // TODO VALIDATE
-
+        validationHandler.validateSpellDTO(spellDTO);
         Spell spell = adminSpellService.convertSpellDtoToEntity(spellDTO);
-        Spell savedSpell = adminSpellService.saveSpell(spell);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedSpell);
+        return ResponseEntity.status(HttpStatus.CREATED).body(adminSpellService.saveSpell(spell));
     }
 
     @PutMapping("/sync-api")
     public ResponseEntity<List<Spell>> syncSpellsFromApi() {
+
         List<Spell> updatedSpells = adminSpellService.syncSpellsFromApi();
         return ResponseEntity.ok(updatedSpells);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Spell> updateSpellById(
-            @PathVariable("id") Long id,
-            @RequestBody SpellDTO spellDTO
+    @PatchMapping("/{index}")
+    public ResponseEntity<Spell> updateSpellBySpellIndex(
+            @PathVariable("index") String index,
+            @RequestBody UpdateSpellDTO updateSpellDTO
     ) {
-        // TODO VALIDATE
-
-        Spell updatedSpell = adminSpellService.updateSpell(id, spellDTO);
+        validationHandler.validateSpellDTO(SpellDTO.createWithIndex(index));
+        validationHandler.validateUpdateSpellDTO(updateSpellDTO);
+        Spell updatedSpell = adminSpellService.updateSpell(index, updateSpellDTO);
         return ResponseEntity.ok(updatedSpell);
     }
 
@@ -70,8 +71,7 @@ public class AdminSpellController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSpellById(@PathVariable("id") Long id) {
 
-        // TODO VALIDATE
-
+        validationHandler.validateSpellIdDTO(new SpellIdDTO(id));
         adminSpellService.deleteSpellById(id);
         return ResponseEntity.noContent().build();
     }

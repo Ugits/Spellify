@@ -3,7 +3,7 @@ package org.jonas.spellify.controller;
 import org.jonas.spellify.model.dto.SpellDTO;
 import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.service.ClientSpellService;
-import org.jonas.spellify.service.validation.SpellValidationHandler;
+import org.jonas.spellify.model.dto.validation.ValidationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,12 +16,12 @@ import java.util.List;
 public class ClientSpellController {
 
     private final ClientSpellService clientSpellService;
-    private final SpellValidationHandler spellValidationHandler;
+    private final ValidationHandler validationHandler;
 
     @Autowired
-    public ClientSpellController(ClientSpellService clientSpellService, SpellValidationHandler spellValidationHandler) {
+    public ClientSpellController(ClientSpellService clientSpellService, ValidationHandler validationHandler) {
         this.clientSpellService = clientSpellService;
-        this.spellValidationHandler = spellValidationHandler;
+        this.validationHandler = validationHandler;
     }
 
     @GetMapping
@@ -31,19 +31,19 @@ public class ClientSpellController {
 
     @GetMapping("/{name}")
     public ResponseEntity<Spell> getSpell(@PathVariable String name) {
-        spellValidationHandler.validateDTO(SpellDTO.createWithName(name));
+        validationHandler.validateSpellDTO(SpellDTO.createWithName(name));
         return ResponseEntity.ok(clientSpellService.getSpellByName(name));
     }
 
     @GetMapping("/level/{level}")
     public ResponseEntity<List<Spell>> getSpellsByLevel(@PathVariable("level") Integer level) {
-        spellValidationHandler.validateDTO(SpellDTO.createWithLevel(level));
+        validationHandler.validateSpellDTO(SpellDTO.createWithLevel(level));
         return ResponseEntity.ok(clientSpellService.getSpellsByLevel(level));
     }
 
     @GetMapping("/usable/{level}")
     public ResponseEntity<List<Spell>> getSpellsByMaxLevel(@PathVariable Integer level) {
-        spellValidationHandler.validateDTO(SpellDTO.createWithLevel(level));
+        validationHandler.validateSpellDTO(SpellDTO.createWithLevel(level));
         return ResponseEntity.ok(clientSpellService.getSpellsByMaxLevel(level));
     }
 
@@ -52,7 +52,7 @@ public class ClientSpellController {
             @PathVariable("ritual") Boolean ritual,
             @RequestParam(required = false, name = "max-level", defaultValue = "9")  Integer maxLevel
     ) {
-        spellValidationHandler.validateDTO(SpellDTO.createWithRitualAndLevel(ritual, maxLevel));
+        validationHandler.validateSpellDTO(SpellDTO.createWithRitualAndLevel(ritual, maxLevel));
         return ResponseEntity.ok(clientSpellService.getSpellsByRitualAndMaxLevel(ritual, maxLevel));
     }
 
@@ -61,7 +61,7 @@ public class ClientSpellController {
             @PathVariable("casting-time") String castingTime,
             @RequestParam(required = false, name = "max-level", defaultValue = "9") Integer maxLevel
     ) {
-        spellValidationHandler.validateDTO(SpellDTO.createWithCastingTimeAndLevel(castingTime, maxLevel));
+        validationHandler.validateSpellDTO(SpellDTO.createWithCastingTimeAndLevel(castingTime, maxLevel));
         return ResponseEntity.ok(clientSpellService.getSpellsByCastingTimeAndMaxLevel(castingTime, maxLevel));
     }
 
@@ -70,7 +70,7 @@ public class ClientSpellController {
             @PathVariable("concentration") Boolean concentration,
             @RequestParam(required = false, name = "max-level", defaultValue = "9") Integer maxLevel
     ) {
-        spellValidationHandler.validateDTO(SpellDTO.createWithConcentrationAndLevel(concentration, maxLevel));
+        validationHandler.validateSpellDTO(SpellDTO.createWithConcentrationAndLevel(concentration, maxLevel));
         return ResponseEntity.ok(clientSpellService.getSpellsByConcentrationAndMaxLevel(concentration, maxLevel));
     }
 
@@ -79,7 +79,7 @@ public class ClientSpellController {
             @PathVariable("duration") String duration,
             @RequestParam(required = false, name = "max-level", defaultValue = "9") Integer maxLevel
     ) {
-        spellValidationHandler.validateDTO(SpellDTO.createWithDurationAndLevel(duration, maxLevel));
+        validationHandler.validateSpellDTO(SpellDTO.createWithDurationAndLevel(duration, maxLevel));
         return ResponseEntity.ok(clientSpellService.getSpellsByDurationAndMaxLevel(duration, maxLevel));
     }
 
@@ -88,7 +88,7 @@ public class ClientSpellController {
             @PathVariable("range") String range,
             @RequestParam(required = false, name = "max-level", defaultValue = "9") Integer maxLevel
     ) {
-        spellValidationHandler.validateDTO(SpellDTO.createWithRangeAndLevel(range, maxLevel));
+        validationHandler.validateSpellDTO(SpellDTO.createWithRangeAndLevel(range, maxLevel));
         return ResponseEntity.ok(clientSpellService.getSpellsByRangeAndMaxLevel(range, maxLevel));
     }
 }

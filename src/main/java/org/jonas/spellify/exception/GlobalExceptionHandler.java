@@ -2,6 +2,7 @@ package org.jonas.spellify.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -84,6 +85,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SpellValidationException.class)
     public ResponseEntity<ErrorResponse> handleSpellValidationException(SpellValidationException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                e.getMessage() + " --> Refer to documentation for input guidelines! <--",
+                LocalDateTime.now().toString()
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(MissingPathVariableException.class)
+    public ResponseEntity<ErrorResponse> handleMissingPathVariableException(MissingPathVariableException e) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 e.getMessage() + " --> Refer to documentation for input guidelines! <--",
