@@ -39,7 +39,7 @@ public class ApiSpellService {
                 .uri("/spells/" + URLEncoder.encode(index, StandardCharsets.UTF_8))
                 .retrieve()
                 .bodyToMono(SpellApi.class)
-                .map(this::mapToSpellApiDTO)  // Call method to convert to SpellApiDTO
+                .map(this::mapToSpellApiDTO)
                 .onErrorResume(error -> Mono.error(new SpellApiException("Error fetching spell details for: " + index + " - " + error.getMessage())));
     }
 
@@ -75,8 +75,4 @@ public class ApiSpellService {
         }
         return spellApiDTO;
     }
-
-
-
-
 }
