@@ -1,6 +1,7 @@
 package org.jonas.spellify.controller;
 
 import org.jonas.spellify.model.dto.SpellDTO;
+import org.jonas.spellify.model.dto.SpellNameDTO;
 import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.service.ClientSpellService;
 import org.jonas.spellify.model.dto.validation.ValidationHandler;
@@ -22,6 +23,11 @@ public class ClientSpellController {
         this.clientSpellService = clientSpellService;
         this.validationHandler = validationHandler;
     }
+
+//    @GetMapping
+//    public ResponseEntity<List<SpellNameDTO>> getSpellNames() {
+//        return ResponseEntity.ok() //Return JSON FILE
+//    }
 
     @GetMapping
     public ResponseEntity<List<Spell>> getSpells() {

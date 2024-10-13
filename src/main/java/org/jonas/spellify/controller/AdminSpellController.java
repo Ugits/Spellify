@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +47,7 @@ public class AdminSpellController {
     }
 
     @PutMapping("/sync-api")
-    public ResponseEntity<List<Spell>> syncSpellsFromApi() {
+    public ResponseEntity<List<Spell>> syncSpellsFromApi() throws IOException {
 
         List<Spell> updatedSpells = adminSpellService.syncSpellsFromApi();
         return ResponseEntity.ok(updatedSpells);

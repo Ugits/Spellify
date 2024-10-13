@@ -1,5 +1,7 @@
 package org.jonas.spellify.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.util.Strings;
 import org.jonas.spellify.api.model.dto.SpellApiDTO;
 import org.jonas.spellify.api.service.ApiSpellService;
 import org.jonas.spellify.exception.SpellAlreadyExists;
@@ -14,6 +16,10 @@ import org.jonas.spellify.repository.SpellDescriptionRepository;
 import org.jonas.spellify.repository.SpellRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,12 +61,14 @@ public class AdminSpellService {
     }
 
     @Transactional
-    public List<Spell> syncSpellsFromApi() {
+    public List<Spell> syncSpellsFromApi() throws IOException {
         List<SpellApiDTO> spellsFromApi = apiSpellService.fetchAllSpells().block();
 
         if (spellsFromApi == null || spellsFromApi.isEmpty()) {
             throw new SpellUpdateException("No spells returned from external API.");
         }
+
+        saveSpellsToJsonFile(spellsFromApi);
 
         return spellsFromApi.stream()
                 .map(this::convertSpellApiDtoToEntity)
@@ -72,6 +80,27 @@ public class AdminSpellService {
                         .orElseGet(() -> spellRepository.save(newSpell))
                 )
                 .collect(Collectors.toList());
+    }
+
+    private void saveSpellsToJsonFile(List<SpellApiDTO> spellsFromApi) throws IOException {
+
+        List<String> spellNames = spellsFromApi
+                .stream()
+                .map(SpellApiDTO::getName)
+                .toList();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+
+            File jsonFile = new File("src/main/resources/spell_names.json");
+            objectMapper.writeValue(jsonFile, spellNames);
+
+            System.out.println("Spells successfully saved to spells.json");
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save spells to JSON file", e);
+        }
     }
 
     private void updateExistingSpell(Spell existingSpell, Spell newSpell) {

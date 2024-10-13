@@ -40,4 +40,4 @@ out/
 src/main/resources/application.properties
 src/main/resources/mykeystore.p12
 src/main/resources/eu-north-1-bundle.pem
-
+src/main/resources/spell_names.json
