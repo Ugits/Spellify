@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SpellDescriptionRepository extends JpaRepository<SpellDescription, Long> {
 
-    void deleteBySpellId(Long id);
+    void deleteBySpellId(Long SpellId);
 }

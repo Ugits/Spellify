@@ -1,6 +1,5 @@
 package org.jonas.spellify.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jonas.spellify.model.dto.SpellDTO;
 import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.service.ClientSpellService;
@@ -9,9 +8,6 @@ import org.jonas.spellify.service.SpellFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 @RestController

@@ -17,11 +17,19 @@ public class Spell {
 
     private String name;
 
-    @JsonProperty("casting_time")
-    private String castingTime;
+    @ManyToMany()
+    @JoinTable(
+            name = "spell_class",
+            joinColumns = @JoinColumn(name = "spell_id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id")
+    )
+    private List<CharClass> classes = new ArrayList<>();
 
     @OneToMany(mappedBy = "spell", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SpellDescription> description = new ArrayList<>();
+
+    @JsonProperty("casting_time")
+    private String castingTime;
 
     private Integer level;
 
@@ -131,5 +139,13 @@ public class Spell {
                 ", duration='" + duration + '\'' +
                 ", concentration=" + concentration +
                 '}';
+    }
+
+    public List<CharClass> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<CharClass> classes) {
+        this.classes = classes;
     }
 }
