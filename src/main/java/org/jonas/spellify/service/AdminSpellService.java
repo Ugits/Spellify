@@ -68,7 +68,7 @@ public class AdminSpellService {
             throw new SpellUpdateException("No spells returned from external API.");
         }
 
-        saveSpellsToJsonFile(spellsFromApi);
+        saveSpellNamesToJsonFile(spellsFromApi);
 
         return spellsFromApi.stream()
                 .map(this::convertSpellApiDtoToEntity)
@@ -82,7 +82,7 @@ public class AdminSpellService {
                 .collect(Collectors.toList());
     }
 
-    private void saveSpellsToJsonFile(List<SpellApiDTO> spellsFromApi) throws IOException {
+    private void saveSpellNamesToJsonFile(List<SpellApiDTO> spellsFromApi) throws IOException {
 
         List<String> spellNames = spellsFromApi
                 .stream()

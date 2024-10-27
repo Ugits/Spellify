@@ -1,13 +1,17 @@
 package org.jonas.spellify.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jonas.spellify.model.dto.SpellDTO;
-import org.jonas.spellify.model.dto.SpellNameDTO;
 import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.service.ClientSpellService;
 import org.jonas.spellify.model.dto.validation.ValidationHandler;
+import org.jonas.spellify.service.SpellFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -16,18 +20,22 @@ import java.util.List;
 public class ClientSpellController {
 
     private final ClientSpellService clientSpellService;
+    private final SpellFileService spellFileService;
     private final ValidationHandler validationHandler;
 
+
     @Autowired
-    public ClientSpellController(ClientSpellService clientSpellService, ValidationHandler validationHandler) {
+    public ClientSpellController(ClientSpellService clientSpellService, SpellFileService spellFileService, ValidationHandler validationHandler) {
         this.clientSpellService = clientSpellService;
+        this.spellFileService = spellFileService;
         this.validationHandler = validationHandler;
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<SpellNameDTO>> getSpellNames() {
-//        return ResponseEntity.ok() //Return JSON FILE
-//    }
+    @GetMapping("/all-names")
+    public ResponseEntity<List<String>> getSpellNames() {
+        List<String> spellNames = spellFileService.getSpellNames();
+        return ResponseEntity.ok(spellNames);
+    }
 
     @GetMapping
     public ResponseEntity<List<Spell>> getSpells() {
@@ -55,7 +63,7 @@ public class ClientSpellController {
     @GetMapping("/ritual/{ritual}")
     public ResponseEntity<List<Spell>> getSpellsByRitualAndMaxLevel(
             @PathVariable("ritual") Boolean ritual,
-            @RequestParam(required = false, name = "max-level", defaultValue = "9")  Integer maxLevel
+            @RequestParam(required = false, name = "max-level", defaultValue = "9") Integer maxLevel
     ) {
         validationHandler.validateSpellDTO(SpellDTO.createWithRitualAndLevel(ritual, maxLevel));
         return ResponseEntity.ok(clientSpellService.getSpellsByRitualAndMaxLevel(ritual, maxLevel));
