@@ -10,8 +10,10 @@ import org.jonas.spellify.exception.SpellUpdateException;
 import org.jonas.spellify.model.dto.SpellDTO;
 import org.jonas.spellify.model.dto.SpellDescriptionDTO;
 import org.jonas.spellify.model.dto.UpdateSpellDTO;
+import org.jonas.spellify.model.entity.CharClass;
 import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.model.entity.SpellDescription;
+import org.jonas.spellify.repository.ClassRepository;
 import org.jonas.spellify.repository.SpellDescriptionRepository;
 import org.jonas.spellify.repository.SpellRepository;
 import org.springframework.stereotype.Service;
@@ -28,11 +30,13 @@ import java.util.stream.Collectors;
 public class AdminSpellService {
 
     private final SpellRepository spellRepository;
-    private final ApiSpellService apiSpellService;
+    private final ClassRepository charClassRepository;
     private final SpellDescriptionRepository spellDescriptionRepository;
+    private final ApiSpellService apiSpellService;
 
-    public AdminSpellService(SpellRepository spellRepository, ApiSpellService apiSpellService, SpellDescriptionRepository spellDescriptionRepository) {
+    public AdminSpellService(SpellRepository spellRepository, ClassRepository classRepository, ApiSpellService apiSpellService, SpellDescriptionRepository spellDescriptionRepository) {
         this.spellRepository = spellRepository;
+        this.charClassRepository = classRepository;
         this.apiSpellService = apiSpellService;
         this.spellDescriptionRepository = spellDescriptionRepository;
     }
@@ -86,7 +90,7 @@ public class AdminSpellService {
 
         List<String> spellNames = spellsFromApi
                 .stream()
-                .map(SpellApiDTO::getName)
+                .map(SpellApiDTO::name)
                 .toList();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -132,23 +136,39 @@ public class AdminSpellService {
     }
 
     private Spell convertSpellApiDtoToEntity(SpellApiDTO spellApiDTO) {
-
+        // Create a new Spell entity
         Spell spell = new Spell();
-        spell.setName(spellApiDTO.getName());
-        spell.setIndex(spellApiDTO.getIndex());
-        spell.setCastingTime(spellApiDTO.getCastingTime());
-        spell.setLevel(spellApiDTO.getLevel());
-        spell.setRange(spellApiDTO.getRange());
-        spell.setRitual(spellApiDTO.isRitual());
-        spell.setDuration(spellApiDTO.getDuration());
-        spell.setConcentration(spellApiDTO.isConcentration());
+        spell.setName(spellApiDTO.name());
+        spell.setIndex(spellApiDTO.index());
+        spell.setCastingTime(spellApiDTO.castingTime());
+        spell.setLevel(spellApiDTO.level());
+        spell.setRange(spellApiDTO.range());
+        spell.setRitual(spellApiDTO.ritual());
+        spell.setDuration(spellApiDTO.duration());
+        spell.setConcentration(spellApiDTO.concentration());
 
-        if (spellApiDTO.getDescription() != null) {
-            spellApiDTO.getDescription().forEach(descDTO -> {
-                SpellDescription newDesc = new SpellDescription(descDTO.getDescription(), spell);
-                spell.addDescription(newDesc);
-            });
+        // Handle classes: convert CharClassApiDTO to CharClass and associate with Spell
+        if (spellApiDTO.classes() != null && !spellApiDTO.classes().isEmpty()) {
+            List<CharClass> classes = spellApiDTO.classes().stream()
+                    .map(charClassDTO -> {
+                        // Check if the CharClass already exists
+                        Optional<CharClass> existingClass = charClassRepository.findByIndex(charClassDTO.index());
+                        return existingClass.orElseGet(() -> new CharClass(charClassDTO.index(), charClassDTO.name()));
+                    }) // Create CharClass instances
+                    .peek(charClass -> charClass.addSpell(spell)) // Ensure bidirectional relationship
+                    .distinct()
+                    .toList();
+            spell.setClasses(classes);
         }
+
+        // Handle descriptions: convert SpellDescriptionApiDTO to SpellDescription and associate with Spell
+        if (spellApiDTO.description() != null && !spellApiDTO.description().isEmpty()) {
+            List<SpellDescription> descriptions = spellApiDTO.description().stream()
+                    .map(desc -> new SpellDescription(desc.getDescription(), spell)) // Create SpellDescription instances
+                    .toList();
+            spell.setDescription(descriptions);
+        }
+
         return spell;
     }
 
@@ -208,6 +228,20 @@ public class AdminSpellService {
         spell.setDuration(spellDTO.duration());
         spell.setConcentration(spellDTO.concentration());
 
+        // Handle classes: convert CharClassDTO to CharClass and associate with Spell
+        if (spellDTO.classes() != null && !spellDTO.classes().isEmpty()) {
+            List<CharClass> classes = spellDTO.classes().stream()
+                    .map(charClassDTO -> {
+                        // Check if the CharClass already exists
+                        Optional<CharClass> existingClass = charClassRepository.findByIndex(charClassDTO.index());
+                        return existingClass.orElseGet(() -> new CharClass(charClassDTO.index(), charClassDTO.name()));
+                    })
+                    .peek(charClass -> charClass.addSpell(spell)) // Ensure bidirectional relationship
+                    .distinct() // Remove duplicates if using a list
+                    .toList();
+            spell.setClasses(classes);
+        }
+
         if (spellDTO.description() != null) {
             spellDTO.description().forEach(descDTO -> {
                 SpellDescription description = new SpellDescription(descDTO.description(), spell);
@@ -217,3 +251,4 @@ public class AdminSpellService {
         return spell;
     }
 }
+

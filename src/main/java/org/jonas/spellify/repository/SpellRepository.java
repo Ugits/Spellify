@@ -37,6 +37,6 @@ public interface SpellRepository extends JpaRepository<Spell, Long> {
     List<Spell> findSpellsByRangeAndLevelIsLessThanEqual(@Param("range") String range, @Nullable @Param("level") Integer level);
 
     @Modifying
-    @Query(value = "TRUNCATE TABLE spells, spell_descriptions RESTART IDENTITY CASCADE", nativeQuery = true)
+    @Query(value = "TRUNCATE TABLE spells, spell_descriptions, classes, spell_class RESTART IDENTITY CASCADE", nativeQuery = true)
     void truncateTable();
 }

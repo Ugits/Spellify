@@ -43,6 +43,7 @@ public class AdminSpellController {
 
         validationHandler.validateSpellDTO(spellDTO);
         Spell spell = adminSpellService.convertSpellDtoToEntity(spellDTO);
+        System.out.println(spell);
         return ResponseEntity.status(HttpStatus.CREATED).body(adminSpellService.saveSpell(spell));
     }
 

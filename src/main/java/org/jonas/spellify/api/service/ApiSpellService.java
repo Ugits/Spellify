@@ -1,10 +1,8 @@
 package org.jonas.spellify.api.service;
 
-import org.jonas.spellify.api.model.SpellApi;
 import org.jonas.spellify.api.model.SpellShort;
 import org.jonas.spellify.api.model.SpellCatalog;
 import org.jonas.spellify.api.model.dto.SpellApiDTO;
-import org.jonas.spellify.api.model.dto.SpellDescriptionApiDTO;
 import org.jonas.spellify.exception.SpellApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,8 +36,8 @@ public class ApiSpellService {
         return webClient.get()
                 .uri("/spells/" + URLEncoder.encode(index, StandardCharsets.UTF_8))
                 .retrieve()
-                .bodyToMono(SpellApi.class)
-                .map(this::mapToSpellApiDTO)
+                .bodyToMono(SpellApiDTO.class)
+                //.map(this::mapToSpellApiDTO)
                 .onErrorResume(error -> Mono.error(new SpellApiException("Error fetching spell details for: " + index + " - " + error.getMessage())));
     }
 
@@ -57,22 +55,22 @@ public class ApiSpellService {
                 .onErrorResume(error -> Mono.error(new SpellApiException("Error fetching all spells: " + error.getMessage())));
     }
 
-    private SpellApiDTO mapToSpellApiDTO(SpellApi spellApi) {
-        SpellApiDTO spellApiDTO = new SpellApiDTO();
-
-        spellApiDTO.setIndex(spellApi.getIndex());
-        spellApiDTO.setName(spellApi.getName());
-        spellApiDTO.setCastingTime(spellApi.getCastingTime());
-        spellApiDTO.setLevel(spellApi.getLevel());
-        spellApiDTO.setRange(spellApi.getRange());
-        spellApiDTO.setRitual(spellApi.isRitual());
-        spellApiDTO.setDuration(spellApi.getDuration());
-        spellApiDTO.setConcentration(spellApi.isConcentration());
-
-        for (String desc : spellApi.getDescription()) {
-            SpellDescriptionApiDTO spellDescriptionDTO = new SpellDescriptionApiDTO(desc);
-            spellApiDTO.addDescription(spellDescriptionDTO);
-        }
-        return spellApiDTO;
-    }
+//    private SpellApiDTO mapToSpellApiDTO(SpellApi spellApi) {
+//        SpellApiDTO spellApiDTO = new SpellApiDTO();
+//
+//        spellApiDTO.setIndex(spellApi.getIndex());
+//        spellApiDTO.setName(spellApi.getName());
+//        spellApiDTO.setCastingTime(spellApi.getCastingTime());
+//        spellApiDTO.setLevel(spellApi.getLevel());
+//        spellApiDTO.setRange(spellApi.getRange());
+//        spellApiDTO.setRitual(spellApi.isRitual());
+//        spellApiDTO.setDuration(spellApi.getDuration());
+//        spellApiDTO.setConcentration(spellApi.isConcentration());
+//
+//        for (String desc : spellApi.getDescription()) {
+//            SpellDescriptionApiDTO spellDescriptionDTO = new SpellDescriptionApiDTO(desc);
+//            spellApiDTO.addDescription(spellDescriptionDTO);
+//        }
+//        return spellApiDTO;
+//    }
 }

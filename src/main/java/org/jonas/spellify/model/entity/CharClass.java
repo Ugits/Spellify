@@ -1,5 +1,6 @@
 package org.jonas.spellify.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -11,15 +12,23 @@ public class CharClass {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    String index;
+    private String index;
 
-    String name;
+    private String name;
 
     @ManyToMany(mappedBy = "classes")
-    private List<Spell> Spells = new ArrayList<>();
+    @JsonBackReference
+    private List<Spell> spells = new ArrayList<>();
+
     public CharClass() {
+    }
+
+    public CharClass(String index, String name) {
+        this.index = index;
+        this.name = name;
+        //this.spells = spells;
     }
 
     public Long getId() {
@@ -43,10 +52,25 @@ public class CharClass {
     }
 
     public List<Spell> getSpells() {
-        return Spells;
+        return spells;
     }
 
     public void setSpells(List<Spell> spells) {
-        Spells = spells;
+        this.spells = spells;
+    }
+
+    public void addSpell(Spell spell) {
+        this.spells.add(spell);
+        spell.getClasses().add(this); // Ensure bidirectional consistency
+    }
+
+    @Override
+    public String toString() {
+        return "CharClass{" +
+                "id=" + id +
+                ", index='" + index + '\'' +
+                ", name='" + name + '\'' +
+                ", spells=" + spells +
+                '}';
     }
 }

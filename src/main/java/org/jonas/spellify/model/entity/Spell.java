@@ -1,5 +1,6 @@
 package org.jonas.spellify.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -17,12 +18,13 @@ public class Spell {
 
     private String name;
 
-    @ManyToMany()
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "spell_class",
             joinColumns = @JoinColumn(name = "spell_id"),
             inverseJoinColumns = @JoinColumn(name = "class_id")
     )
+    @JsonManagedReference
     private List<CharClass> classes = new ArrayList<>();
 
     @OneToMany(mappedBy = "spell", cascade = CascadeType.ALL, orphanRemoval = true)

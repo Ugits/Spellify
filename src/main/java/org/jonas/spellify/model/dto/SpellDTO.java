@@ -25,6 +25,8 @@ public record SpellDTO(
         @Max(value = 9, message = "Level must be at most 9.")
         Integer level,
 
+        List<CharClassDTO> classes,
+
         List<SpellDescriptionDTO> description,
 
         @NotNull(message = "Casting time cannot be null.")
@@ -51,42 +53,42 @@ public record SpellDTO(
 ) {
         // factory method for name
         public static SpellDTO createWithIndex(String index) {
-                return new SpellDTO(index, "temp", 0, List.of(), "temp", "temp", "temp", false, false);
+                return new SpellDTO(index, "temp", 0,List.of(), List.of(), "temp", "temp", "temp", false, false);
         }
 
         // factory method for name
         public static SpellDTO createWithName(String name) {
-                return new SpellDTO("temp", name, 0, List.of(), "temp", "temp", "temp", false, false);
+                return new SpellDTO("temp", name, 0,List.of(), List.of(), "temp", "temp", "temp", false, false);
         }
 
         // factory for level only
         public static SpellDTO createWithLevel(Integer level) {
-                return new SpellDTO("temp", "temp", level, List.of(), "temp", "temp", "temp", false, false);
+                return new SpellDTO("temp", "temp", level,List.of(), List.of(), "temp", "temp", "temp", false, false);
         }
 
         // factory for ritual and level
         public static SpellDTO createWithRitualAndLevel(Boolean ritual, Integer maxLevel) {
-                return new SpellDTO("temp", "temp", maxLevel, List.of(), "temp", "temp", "temp", ritual, false);
+                return new SpellDTO("temp", "temp", maxLevel,List.of(), List.of(), "temp", "temp", "temp", ritual, false);
         }
 
         // factory for casting time and level
         public static SpellDTO createWithCastingTimeAndLevel(String castingTime, Integer maxLevel) {
-                return new SpellDTO("temp", "temp", maxLevel, List.of(), castingTime, "temp", "temp", false, false);
+                return new SpellDTO("temp", "temp", maxLevel,List.of(), List.of(), castingTime, "temp", "temp", false, false);
         }
 
         // factory for concentration and level
         public static SpellDTO createWithConcentrationAndLevel(Boolean concentration, Integer maxLevel) {
-                return new SpellDTO("temp", "temp", maxLevel, List.of(), "temp", "temp", "temp", false, concentration);
+                return new SpellDTO("temp", "temp", maxLevel,List.of(), List.of(), "temp", "temp", "temp", false, concentration);
         }
 
         // factory for duration and level
         public static SpellDTO createWithDurationAndLevel(String duration, Integer maxLevel) {
-                return new SpellDTO("temp", "temp", maxLevel, List.of(), "temp", "temp", duration, false, false);
+                return new SpellDTO("temp", "temp", maxLevel,List.of(), List.of(), "temp", "temp", duration, false, false);
         }
 
         // factory for range and level
         public static SpellDTO createWithRangeAndLevel(String range, Integer maxLevel) {
-                return new SpellDTO("temp","temp", maxLevel, List.of(), "temp", range, "temp", false, false);
+                return new SpellDTO("temp","temp", maxLevel,List.of(), List.of(), "temp", range, "temp", false, false);
         }
 
 
