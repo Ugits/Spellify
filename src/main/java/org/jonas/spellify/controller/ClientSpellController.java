@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/spells")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 public class ClientSpellController {
 
     private final ClientSpellService clientSpellService;
@@ -33,7 +33,7 @@ public class ClientSpellController {
         return ResponseEntity.ok(spellNames);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Spell>> getSpells() {
         return ResponseEntity.ok(clientSpellService.getAllSpells());
     }
