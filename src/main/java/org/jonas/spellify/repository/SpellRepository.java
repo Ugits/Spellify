@@ -21,6 +21,10 @@ public interface SpellRepository extends JpaRepository<Spell, Long> {
 
     List<Spell> findSpellsByLevelLessThanEqual(Integer level);
 
+    @Query("SELECT s FROM Spell s WHERE s.index = :index1 OR s.index = :index2 OR s.index = :index3")
+    List<Spell> findSpellsByIndexes(@Param("index1") String index1, @Param("index2") String index2, @Param("index3") String index3);
+
+
     @Query("SELECT s FROM Spell s WHERE s.castingTime = :casting_time AND (:level IS NULL OR s.level <= :level)")
     List<Spell> findSpellsByCastingTimeAndLevelIsLessThanEqual(@Param("casting_time") String castingTime, @Nullable @Param("level") Integer level);
 

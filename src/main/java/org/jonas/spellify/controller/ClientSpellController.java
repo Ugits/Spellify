@@ -27,6 +27,16 @@ public class ClientSpellController {
         this.validationHandler = validationHandler;
     }
 
+    @GetMapping("/sample/{index1}/{index2}/{index3}")
+    public ResponseEntity<List<Spell>> sampleSpell(
+            @PathVariable String index1,
+            @PathVariable String index2,
+            @PathVariable String index3) {
+
+        return ResponseEntity.ok(clientSpellService.getSpellsByIndexes(index1, index2, index3));
+    }
+
+
     @GetMapping("/all-names")
     public ResponseEntity<List<String>> getSpellNames() {
         List<String> spellNames = spellFileService.getSpellNames();
@@ -35,6 +45,7 @@ public class ClientSpellController {
 
     @GetMapping("/all")
     public ResponseEntity<List<Spell>> getSpells() {
+        System.out.println("ENTER all SPELLS in WS CONTROLLER");
         return ResponseEntity.ok(clientSpellService.getAllSpells());
     }
 

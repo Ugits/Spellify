@@ -5,6 +5,7 @@ import org.jonas.spellify.model.entity.Spell;
 import org.jonas.spellify.repository.SpellRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,7 +17,16 @@ public class ClientSpellService {
         this.spellRepository = spellRepository;
     }
 
+    public List<Spell> getSpellsByIndexes(String index1, String index2, String index3) {
+        List<Spell> spells = spellRepository.findSpellsByIndexes(index1, index2, index3);
+        if (spells.isEmpty()) {
+            throw new SpellNotFoundException(index1 + ", " + index2 + " and " + index3 + " was not found");
+        }
+        return spells;
+    }
+
     public List<Spell> getAllSpells() {
+        System.out.println("ENTER ALL SPELLS in WS SERVICE");
         List<Spell> spells = spellRepository.findAll();
         if (spells.isEmpty()) throw new SpellNotFoundException(
                 "No spells found");
