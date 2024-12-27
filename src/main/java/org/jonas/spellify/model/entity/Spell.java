@@ -27,7 +27,9 @@ public class Spell {
     @JsonManagedReference
     private List<CharClass> classes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "spell", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "spell",
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SpellDescription> description = new ArrayList<>();
 
     @JsonProperty("casting_time")
