@@ -1,3 +1,7 @@
+<img src="https://images.unsplash.com/photo-1742234412139-62ac5b37c819?auto=format&amp;fit=max&amp;w=1600&amp;q=85" alt="An old journal open on a desk, by Aashish Chandra" width="100%" />
+
+<sub>Image by [Aashish Chandra on Unsplash](https://unsplash.com/photos/an-old-journal-sits-open-on-a-desk-lahb80sFcHw).</sub>
+
 # Spellify
 
 A Java and Spring Boot REST API for browsing and managing Dungeons & Dragons spells. Spellify stores a local spell collection in PostgreSQL and integrates with an external spell API to retrieve and synchronise data.
